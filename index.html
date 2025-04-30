@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Генератор імен для стартапів</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background: #f4f4f4;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px;
+    }
+    h1 {
+      color: #333;
+    }
+    input, button {
+      padding: 10px;
+      margin: 10px;
+      font-size: 16px;
+      width: 250px;
+    }
+    #results {
+      margin-top: 20px;
+      padding: 20px;
+      background: #fff;
+      border-radius: 8px;
+      width: 80%;
+      max-width: 500px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .name {
+      margin: 5px 0;
+      font-weight: bold;
+    }
+    .form-container {
+      margin-top: 20px;
+    }
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Генератор імен для стартапів</h1>
+  
+  <!-- Форма логіну -->
+  <div id="loginForm" class="form-container">
+    <input type="text" id="loginUsername" placeholder="Логін">
+    <input type="password" id="loginPassword" placeholder="Пароль">
+    <button onclick="login()">Увійти</button>
+    <p>Немає акаунту? <a href="javascript:void(0);" onclick="showRegister()">Зареєструватися</a></p>
+  </div>
+
+  <!-- Форма реєстрації -->
+  <div id="registerForm" class="form-container hidden">
+    <input type="text" id="registerUsername" placeholder="Логін">
+    <input type="password" id="registerPassword" placeholder="Пароль">
+    <input type="password" id="registerConfirmPassword" placeholder="Підтвердження паролю">
+    <button onclick="register()">Зареєструватися</button>
+    <p>Вже є акаунт? <a href="javascript:void(0);" onclick="showLogin()">Увійти</a></p>
+  </div>
+
+  <!-- Генератор імен -->
+  <div id="generatorSection" class="hidden">
+    <input type="text" id="keyword" placeholder="Введіть тему або ключове слово">
+    <button onclick="generateNames()">Згенерувати</button>
+
+    <div id="results"></div>
+  </div>
+
+  <script>
+    const prefixes = ["Neo", "Smart", "Ultra", "Next", "Quantum", "Super", "Omni", "Meta", "Aero", "Inno"];
+    const suffixes = ["ly", "ify", "scape", "zone", "verse", "hub", "gen", "lab", "works", "nest"];
+
+    // Логін
+    function login() {
+      const username = document.getElementById('loginUsername').value;
+      const password = document.getElementById('loginPassword').value;
+
+      if (localStorage.getItem(username) && localStorage.getItem(username) === password) {
+        alert('Успішний вхід');
+        showGeneratorSection();
+      } else {
+        alert('Невірний логін або пароль');
+      }
+    }
+
+    // Реєстрація
+    function register() {
+      const username = document.getElementById('registerUsername').value;
+      const password = document.getElementById('registerPassword').value;
+      const confirmPassword = document.getElementById('registerConfirmPassword').value;
+
+      if (password !== confirmPassword) {
+        alert('Паролі не співпадають');
+        return;
+      }
+
+      if (localStorage.getItem(username)) {
+        alert('Користувач з таким логіном вже існує');
+        return;
+      }
+
+      localStorage.setItem(username, password);
+      alert('Реєстрація успішна, тепер можна увійти');
+      showLogin();
+    }
+
+    // Показати форму логіну
+    function showLogin() {
+      document.getElementById('loginForm').classList.remove('hidden');
+      document.getElementById('registerForm').classList.add('hidden');
+    }
+
+    // Показати форму реєстрації
+    function showRegister() {
+      document.getElementById('registerForm').classList.remove('hidden');
+      document.getElementById('loginForm').classList.add('hidden');
+    }
+
+    // Показати генератор імен
+    function showGeneratorSection() {
+      document.getElementById('generatorSection').classList.remove('hidden');
+      document.getElementById('loginForm').classList.add('hidden');
+      document.getElementById('registerForm').classList.add('hidden');
+    }
+
+    // Генерація імен
+    function generateNames() {
+      const keyword = document.getElementById('keyword').value.trim();
+      const results = document.getElementById('results');
+      results.innerHTML = '';
+
+      if (keyword === "") {
+        results.innerHTML = "<p>Будь ласка, введіть ключове слово!</p>";
+        return;
+      }
+
+      let generated = "";
+
+      for (let i = 0; i < 10; i++) {
+        const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
+        const suffix = suffixes[Math.floor(Math.random() * suffixes.length)];
+        const name = prefix + keyword.charAt(0).toUpperCase() + keyword.slice(1).toLowerCase() + suffix;
+        generated += `<div class="name">${name}</div>`;
+      }
+
+      results.innerHTML = generated;
+    }
+  </script>
+
+</body>
+</html>
+
+
